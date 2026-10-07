@@ -40,6 +40,7 @@
 ## What This Does
 
 <!-- Three or four sentences: what a user asks for, and what they get back. -->
+The user asks for a specifc item of clothing and gets back a suggested item based on listings.
 
 
 
