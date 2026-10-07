@@ -40,7 +40,7 @@
 ## What This Does
 
 <!-- Three or four sentences: what a user asks for, and what they get back. -->
-The user asks for a specifc item of clothing and gets back a suggested item based on listings.
+The user types what they're looking for in plain language, like "vintage graphic tee under $30, size M". FitFindr pulls the description, size and max price out of that, then searches the thrift listings for the best match. If it finds one, it suggests one or two outfits that pair the item with clothes already in the user's wardrobe. It also writes a short social-media caption (a "fit card") that names the item, its price and the platform. If nothing matches, it stops and tells the user what to change in their search.
 
 
 
@@ -116,8 +116,38 @@ The user asks for a specifc item of clothing and gets back a suggested item base
 **One full query**
 
 ```
-$ python app.py ask '...'
+$ python app.py ask 'vintage graphic tee under $30'
+  Found:    Y2K Baby Tee — Butterfly Print — $18.0 on depop
 
+  Outfit:   Here are two distinct outfits you can create using your new Y2K Butterfly Baby Tee and your existing wardrobe, playing with the contrast of fitted and baggy silhouettes typical of 2000s streetwear:
+
+### Outfit 1: Effortless Y2K Streetwear (Balanced Proportions)
+*This look pairs the ultra-fitted, cropped nature of the baby tee with your relaxed denim for that classic early-2000s model-off-duty vibe.*
+
+*   **Top:** Y2K Baby Tee (Butterfly Print)
+*   **Bottoms:** Baggy straight-leg jeans (dark wash)
+*   **Accessories:** Brown leather belt (let it peek out) + Black crossbody bag
+*   **Footwear:** Chunky white sneakers
+*   **Layering (Optional):** Vintage black denim jacket (worn off the shoulders or carried on the arm)
+
+**Why it works:** The tight baby tee balances out the voluminous baggy jeans. The brown belt adds a nice 90s/Y2K color contrast against the dark wash denim, and the chunky sneakers tie the retro streetwear aesthetic together.
+
+---
+
+### Outfit 2: Edgy Contrast & High-Low Mix
+*This outfit leans into the nostalgic butterfly print but adds a tougher, grungier edge using your black outerwear and boots.*
+
+*   **Top:** Y2K Baby Tee (Butterfly Print)
+*   **Bottoms:** Wide-leg khaki trousers
+*   **Outerwear:** Black cropped zip hoodie (worn open or partially unzipped to show off the tee)
+*   **Accessories:** Black crossbody bag
+*   **Footwear:** Black combat boots
+
+**Why it works:** Pairing a feminine, playful baby tee with structured khaki trousers creates a cool high-low contrast. Throwing the black cropped zip hoodie over top keeps the midriff-baring Y2K proportions intact while the combat boots anchor the outfit and add a modern, edgy twist.
+
+  Fit card: 🦋 Channeling pure early 2000s model-off-duty energy with this Y2K butterfly baby tee! Rock it oversized with baggy denim or lean into edgy streetwear with combat boots.
+
+Grab this super cute fitted crop top for just $18 on Depop! ✨
 ```
 
 **The three tools, tested one at a time**
@@ -172,15 +202,15 @@ Effortlessly cool and perfectly worn-in. Snagged these vintage Levi's 501 jeans 
 
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I gave Claude my draft acceptance criteria and asked it to check whether each one was measurable.
+- *What came back:* It said criteria 3 and 4 weren't specific enough to score, and suggested measurable versions: compare ids for state, and compare first sentences for fit cards.
+- *What I changed:* I rewrote criterion 3 as "In 4 of 5 runs, the id of session['selected_item'] equals session['search_results'][0]['id'] and the id of the item that reached suggest_outfit." I rewrote criterion 4 as "5 cards for 5 different items share no first sentence." Now I can count both instead of judging them by eye.
 
 **Moment 2**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I asked Claude whether my three tool functions were good, and had it give me tests to run on each one from the terminal.
+- *What came back:* One `python -c` command per tool. These are the three commands in the Sample Run section above, including `search_listings('graphic tee', max_price=30)` and a `create_fit_card` test run with `AI201_CACHE=0` so the cache doesn't hand back an old caption.
+- *What I changed:* I changed the function lines, claude was giving a wrong line for suggest_outfit function where it wasnt using (generate) prompt and instead was just hard coding a description, so I added that. I then used the tests it gave me to verify the outputs were as expected for every tool.
 
 <!-- ═══════════════════════ UNIT 4 — THE TEST ═══════════════════════
 
