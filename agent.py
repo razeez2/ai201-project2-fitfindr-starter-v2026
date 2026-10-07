@@ -13,6 +13,8 @@ Build and test your three tools in `tools.py` first. Then come here.
     python agent.py          runs both example paths below
 """
 
+import re
+
 import config
 import trace
 from tools import search_listings, suggest_outfit, create_fit_card
@@ -105,12 +107,90 @@ def run_agent(query: str, wardrobe: dict) -> dict:
       • A handler for ModelUnavailable, so a bad key produces a message rather
         than a stack trace. The import is already at the top of this file.
     """
+    # 1. Start a session.
     session = new_session(query, wardrobe)
+    count = 0
 
-    # TODO: delete these two lines and build the loop.
-    session["error"] = "The planning loop isn't built yet — see the TODO in agent.py."
+    # 3. Parse the query.
+    count += 1
+    trace.check_iterations(count)
+    session["parsed"] = parse_query(session["query"])
+
+    # 4. Search, reading what we parsed back out of the session.
+    count += 1
+    trace.check_iterations(count)
+    session["search_results"] = search_listings(
+        session["parsed"]["description"],
+        session["parsed"]["size"],
+        session["parsed"]["max_price"],
+    )
+
+    # THE BRANCH: nothing came back, so stop. Don't call suggest_outfit.
+    if not session["search_results"]:
+        session["error"] = (
+            f"No listings matched '{session['parsed']['description']}'. "
+            "Try a higher max price, a different size, or fewer keywords."
+        )
+        return session
+
+    # 5. Choose the first result.
+    session["selected_item"] = session["search_results"][0]
+
+    # 6. Suggest an outfit with the selected item and the wardrobe.
+    count += 1
+    trace.check_iterations(count)
+    session["outfit_suggestion"] = suggest_outfit(
+        session["selected_item"], session["wardrobe"]
+    )
+
+    # 7. Make the fit card from the outfit and the item.
+    count += 1
+    trace.check_iterations(count)
+    session["fit_card"] = create_fit_card(
+        session["outfit_suggestion"], session["selected_item"]
+    )
+
+    # 8. Return the session.
     return session
 
+
+# ── query parsing ─────────────────────────────────────────────────────────────
+
+# Filler words to drop. search_listings matches keywords as substrings, so a
+# word like "a" or "for" would match almost every listing.
+STOPWORDS = {"looking", "for", "a", "an", "the", "i", "want", "need", "some", "under", "size"}
+
+
+def parse_query(query: str) -> dict:
+    """
+    Parse a query with regex.
+
+    "vintage graphic tee under $30, size M"
+      → {"description": "vintage graphic tee", "size": "M", "max_price": 30.0}
+    """
+    text = query.lower()
+
+    # Price: the number after a "$", e.g. "$30".
+    max_price = None
+    price_match = re.search(r"\$(\d+(?:\.\d+)?)", text)
+    if price_match:
+        max_price = float(price_match.group(1))
+        text = text.replace(price_match.group(0), "")
+
+    # Size: the word after "size", e.g. "size M".
+    size = None
+    size_match = re.search(r"size\s+(\w+)", text)
+    if size_match:
+        size = size_match.group(1).upper()
+        text = text.replace(size_match.group(0), "")
+
+    # Description: whatever words are left, minus the filler.
+    words = re.findall(r"[a-z0-9]+", text)
+    description = " ".join(word for word in words if word not in STOPWORDS)
+
+    return {"description": description, "size": size, "max_price": max_price}
+
+    
 
 # ── running it directly ───────────────────────────────────────────────────────
 
