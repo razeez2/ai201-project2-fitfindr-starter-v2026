@@ -25,9 +25,8 @@ Given a query that matches at least one listing, the agent completes all three
 tool calls and returns a fit card — in at least 4 of 5 tries.
 
 **Why this target:**
-<!-- Why 4 of 5 and not 5 of 5? Something about your search, probably —
-     "my search is a plain keyword match and some phrasings will miss" is a
-     real answer. -->
+
+     the search is a plain keyword match and some phrasings will miss
 
 ---
 
@@ -37,8 +36,7 @@ Given a query that matches no listings, the agent stops before calling
 `suggest_outfit` and returns a message naming what to change — 5 of 5 tries.
 
 **Why this target:**
-<!-- Why is 5 of 5 reasonable here when criterion 1 isn't? What's different
-     about this path? -->
+     5 of 5 because the empty-search branch is a plain if, so the model never decides it
 
 ---
 
@@ -54,9 +52,13 @@ Given a query that matches no listings, the agent stops before calling
      compares session["selected_item"] against what actually reached
      suggest_outfit is the shape you're after. -->
 
+     In 4 of 5 runs, the id of session['selected_item'] equals session['search_results'][0]['id'] and the id of the item that reached suggest_outfit.
+
 
 
 **Why this target:**
+
+     4/5 shows more accuracy and consistency in state in between tool outputs and inputs
 
 
 
@@ -75,9 +77,12 @@ Given a query that matches no listings, the agent stops before calling
      sentence? A card longer than a caption anyone would post? Any of those can
      be turned into a number. -->
 
+     5 cards for 5 different items share no first sentence.
 
 
 **Why this target:**
+
+     The model should vary for all different items as it is the nature of the agents.
 
 
 
@@ -92,9 +97,12 @@ Given a query that matches no listings, the agent stops before calling
      search respects a price ceiling — anything, as long as it names a number
      or an observable outcome. -->
 
+     Given a query with an empty wardrobe, the agent returns a non-empty string rather than a "", in atleast 4/5 tries.
 
 
 **Why this target:**
+
+     The agent must handle empty wardrobes and be able to suggest outfits to the user wit just items in a general styling way. 4/5 tries is the metric because it may run into an exception or error.
 
 
 
