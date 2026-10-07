@@ -20,7 +20,9 @@ That last line is what your loop branches on. "Returns a list" earns nothing —
 the description has to say what is *in* the list.
 """
 
-import config  # noqa: F401 — you'll use this in search_listings
+import re
+
+import config
 from generate import generate
 from utils.data_loader import load_listings
 
@@ -78,8 +80,38 @@ def search_listings(
     Test it from a terminal before you move on:
         python -c "from tools import search_listings; print(search_listings('graphic tee', max_price=30))"
     """
-    # TODO: replace this with your implementation
-    return []
+    listings = load_listings()
+    listings = [listing for listing in listings if listing['price'] <= max_price] if max_price is not None else listings
+    listings = [listing for listing in listings if _size_matches(size, listing['size'])] if size is not None else listings
+
+    keywords = description.lower().split()
+    scored = []
+    for listing in listings:
+        text = " ".join([
+            listing['title'],
+            listing['description'],
+            " ".join(listing['style_tags']),
+        ]).lower()
+        score = sum(1 for keyword in keywords if keyword in text)
+        if score > 0:
+            scored.append((score, listing))
+
+    scored.sort(key=lambda pair: pair[0], reverse=True)
+    return [listing for score, listing in scored][:config.SEARCH_RESULT_LIMIT]
+
+
+def _size_matches(wanted: str, listing_size: str) -> bool:
+    """
+    True if `wanted` is one of the whole size tokens in `listing_size`,
+    case-insensitively. "M" matches "S/M" and "M/L"; "XL" matches
+    "XL (oversized)"; but "S" does not match "US 9" and "L" does not match "XL".
+    """
+    wanted = wanted.strip().lower()
+    listing_size = listing_size.lower()
+    if wanted == listing_size:
+        return True
+    tokens = [t for t in re.split(r"[\s/()]+", listing_size) if t]
+    return wanted in tokens
 
 
 # ── Tool 2: suggest_outfit ────────────────────────────────────────────────────
@@ -112,8 +144,17 @@ def suggest_outfit(new_item: dict, wardrobe: dict) -> str:
     Test it from a terminal before you move on:
         python -c "from tools import suggest_outfit; from utils.data_loader import get_example_wardrobe, load_listings; print(suggest_outfit(load_listings()[0], get_example_wardrobe()))"
     """
-    # TODO: replace this with your implementation
-    return ""
+    if not wardrobe['items']:
+        return generate(f"Give one or two general styling ideas for this thrifted item: {new_item['title']} — {new_item['description']}")
+
+    # Format the wardrobe items into the prompt
+    wardrobe_items = "\n".join([f"- {item['name']}" for item in wardrobe['items']])
+
+    # Ask the model for specific combinations
+    prompt = f"Based on these items in your wardrobe:\n{wardrobe_items}\n\nSuggest one or two outfits you can create with this new item: {new_item['title']}"
+
+    return generate(prompt)  # Assuming generate() is defined elsewhere
+
 
 
 # ── Tool 3: create_fit_card ───────────────────────────────────────────────────
@@ -152,5 +193,10 @@ def create_fit_card(outfit: str, new_item: dict) -> str:
     Test it from a terminal before you move on:
         python -c "from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('jeans and white sneakers', load_listings()[0]))"
     """
-    # TODO: replace this with your implementation
-    return ""
+    if not outfit.strip():
+        return generate(f"Describe this thrifted item: {new_item['title']} — {new_item['description']}")
+    
+    description = f"{new_item['title']} — {new_item['description']} (${new_item['price']:.0f} on {new_item['platform']})"
+
+    outfit = f"{outfit}. Mention the item and its price and platform once each, and be specific about the vibe."
+    return generate(f"Create a short caption for this outfit: {outfit}. {description}")
