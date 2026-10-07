@@ -58,26 +58,28 @@ The user asks for a specifc item of clothing and gets back a suggested item base
      on, and if you don't decide it here you'll discover it as a crash in
      Milestone 5. -->
 
+
+
 ### `search_listings`
 
-- **What it does:**
-- **Inputs:** <!-- name and type each: `max_price` (float), not "a price" -->
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** This tool searches the listings file based on an input of description,size, and max_price and returns matches to the user.
+- **Inputs:** description (str), size (str), max_price (float)
+- **Returns:** list[dict]
+- **When it has nothing:** It returns an empty list.
 
 ### `suggest_outfit`
 
-- **What it does:**
-- **Inputs:**
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** This tool takes a thrifted item and a user's wardrobe and returns outfit suggestions.
+- **Inputs:** new_item (dict), wardrobe (dict)
+- **Returns:** str
+- **When it has nothing:** returns a general suggestion str
 
 ### `create_fit_card`
 
-- **What it does:**
-- **Inputs:**
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** takes a outfit from suggest_outfit and a new_item and returns a caption that someone would actually post about the outfit.
+- **Inputs:** outfit (str), new_item (dict)
+- **Returns:** str
+- **When it has nothing:** returns a descriptive message (str)
 
 ---
 
@@ -94,7 +96,7 @@ The user asks for a specifc item of clothing and gets back a suggested item base
      The grader checks your code against what you claim here, so the file and
      function have to be real. -->
 
-**Branch rule:**
+**Branch rule:** If suggest_outfit has an empty wardrobe as its argument, ensure that str of a general suggestion is returned. Otherwise, use the current items in the user's wardrobe in the prompt to combine them.
 
 **Where it lives:** `agent.py::run_agent`
 
