@@ -19,7 +19,7 @@ import config
 import trace
 from tools import search_listings, suggest_outfit, create_fit_card
 from generate import ModelUnavailable
-from mcp_client import call_tool
+from mcp_client import call_tool, MCPError
 
 
 # ── session state ─────────────────────────────────────────────────────────────
@@ -125,12 +125,16 @@ def run_agent(query: str, wardrobe: dict) -> dict:
     #     session["parsed"]["size"],
     #     session["parsed"]["max_price"],
     # )
-    from mcp_client import call_tool
+    
     session["search_results"] = call_tool("search_listings", {
             "description": session["parsed"]["description"],
             "size": session["parsed"]["size"],
             "max_price": session["parsed"]["max_price"],
         })
+    
+    trace.step("search_listings", inputs=session["parsed"], returned=session["search_results"])
+    
+    
     
 
     # THE BRANCH: nothing came back, so stop. Don't call suggest_outfit.
@@ -140,6 +144,8 @@ def run_agent(query: str, wardrobe: dict) -> dict:
             "Try a higher max price, a different size, or fewer keywords."
         )
         return session
+    
+    trace.step("stop", inputs=session["parsed"], returned=session["search_results"])
 
     # 5. Choose the first result.
     session["selected_item"] = session["search_results"][0] 
@@ -150,6 +156,7 @@ def run_agent(query: str, wardrobe: dict) -> dict:
     session["outfit_suggestion"] = suggest_outfit(
         session["selected_item"], session["wardrobe"]
     )
+    trace.step("suggest_outfit", inputs={"new_item": session["selected_item"], "wardrobe": session["wardrobe"]}, returned=session["outfit_suggestion"])
 
     # 7. Make the fit card from the outfit and the item.
     count += 1
@@ -157,6 +164,7 @@ def run_agent(query: str, wardrobe: dict) -> dict:
     session["fit_card"] = create_fit_card(
         session["outfit_suggestion"], session["selected_item"]
     )
+    trace.step("create_fit_card", inputs={"outfit": session["outfit_suggestion"], "new_item": session["selected_item"]}, returned=session["fit_card"])
 
     # 8. Return the session.
     return session

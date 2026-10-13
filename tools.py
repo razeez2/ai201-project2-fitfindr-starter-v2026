@@ -92,8 +92,8 @@ def search_listings(
             listing['description'],
             " ".join(listing['style_tags']),
         ]).lower()
-        score = sum(1 for keyword in keywords if keyword in text)
-        if score > 0:
+        score = sum(1 for keyword in keywords if keyword in text) 
+        if score > 0:  # Only include listings that match all keywords
             scored.append((score, listing))
 
     scored.sort(key=lambda pair: pair[0], reverse=True)
