@@ -19,12 +19,16 @@ TODO — register one tool.
 Uncomment the block below and fill it in. Three things matter:
 
   1. **The name.** Exactly what your agent will ask for.
+    
+    - search_listings
 
   2. **The description.** This is the part that isn't code and matters most.
      Write it before you look at the example. You are not writing it for your
      agent — you're writing it for an agent someone else builds, that will
      never see your implementation. That isn't hypothetical; it's what every
      MCP server on the registry is.
+     
+     - searches listings based on inputted description (string), size (string, optional), and max_price (float, optional). Returns a list of dictionaries representing the listings found. If no listings are found, returns an empty list.
 
      Two things to get right: name units and types ("price" is ambiguous,
      "max_price, in whole dollars" isn't), and state the empty case. Last unit
@@ -68,22 +72,22 @@ mcp = FastMCP("fitfindr", log_level="WARNING")
 
 
 # ── TODO: uncomment and fill this in ──────────────────────────────────────────
-#
-# @mcp.tool()
-# def search_listings(
-#     description: str,
-#     size: str | None = None,
-#     max_price: float | None = None,
-# ) -> list[dict]:
-#     """
-#     <-- YOUR DESCRIPTION GOES HERE.
-#
-#         One or two sentences. What does this tool do, what does it need, and
-#         what does it give back when it finds nothing? Written for a reader
-#         who cannot see the code.
-#     """
-#     return _search_listings_impl(description, size, max_price)
-#
+
+@mcp.tool()
+def search_listings(
+    description: str,
+    size: str | None = None,
+    max_price: float | None = None,
+) -> list[dict]:
+    """
+
+        This tool searches for listings based on the provided description, size, and maximum price. It needs these 
+        parameters(description(str), size(str | None), max_price(float | None)). max_price is in dollars.
+        Size and max_price are optional.When it finds nothing
+        it returns an empty list. Each listing is represented as a dictionary with the following keys: 'title', 'price', 'size', 'url', and 'image_url'. The results are returned as a list of these dictionaries.
+    """
+    return _search_listings_impl(description, size, max_price)
+
 # ──────────────────────────────────────────────────────────────────────────────
 #
 # Two notes on the block above.

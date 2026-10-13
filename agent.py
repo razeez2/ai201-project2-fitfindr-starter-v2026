@@ -19,6 +19,7 @@ import config
 import trace
 from tools import search_listings, suggest_outfit, create_fit_card
 from generate import ModelUnavailable
+from mcp_client import call_tool
 
 
 # ── session state ─────────────────────────────────────────────────────────────
@@ -119,11 +120,18 @@ def run_agent(query: str, wardrobe: dict) -> dict:
     # 4. Search, reading what we parsed back out of the session.
     count += 1
     trace.check_iterations(count)
-    session["search_results"] = search_listings(
-        session["parsed"]["description"],
-        session["parsed"]["size"],
-        session["parsed"]["max_price"],
-    )
+    # session["search_results"] = search_listings(
+    #     session["parsed"]["description"],
+    #     session["parsed"]["size"],
+    #     session["parsed"]["max_price"],
+    # )
+    from mcp_client import call_tool
+    session["search_results"] = call_tool("search_listings", {
+            "description": session["parsed"]["description"],
+            "size": session["parsed"]["size"],
+            "max_price": session["parsed"]["max_price"],
+        })
+    
 
     # THE BRANCH: nothing came back, so stop. Don't call suggest_outfit.
     if not session["search_results"]:
@@ -134,7 +142,7 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         return session
 
     # 5. Choose the first result.
-    session["selected_item"] = session["search_results"][0]
+    session["selected_item"] = session["search_results"][0] 
 
     # 6. Suggest an outfit with the selected item and the wardrobe.
     count += 1
@@ -209,13 +217,13 @@ def _show(session: dict) -> None:
 if __name__ == "__main__":
     from utils.data_loader import get_example_wardrobe
 
-    print("=== A query the data can match ===")
+    print("=== A query the data can match ===") 
     _show(run_agent(
         query="looking for a vintage graphic tee under $30",
         wardrobe=get_example_wardrobe(),
     ))
 
-    print("\n=== A query it can't ===")
+    print("\n=== A query it can't ===") 
     _show(run_agent(
         query="designer ballgown size XXS under $5",
         wardrobe=get_example_wardrobe(),
