@@ -1,0 +1,193 @@
+AI201_CACHE=0 python app.py ask 'butterfly' --trace
+AI201_CACHE=0 python app.py ask '501' --trace
+AI201_CACHE=0 python app.py ask 'denim jacket' --trace
+AI201_CACHE=0 python app.py ask 'floral dress' --trace
+AI201_CACHE=0 python app.py ask 'flannel' --trace
+[1] search_listings(via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 1 items: Y2K Baby Tee — Butterfly Print
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: Here are two distinct outfits combining your new Y2K butterfly baby tee with your existing wardrobe items, pla…
+      →    IDs: first=lst_002, selected=lst_002, passed=lst_002; match=True
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: **Caption:**  Mastering the high-low silhouette with the ultimate early 2000s staple 🦋✨ Sourced this Y2K Baby …
+
+  Found:    Y2K Baby Tee — Butterfly Print — $18.0 on depop
+
+  Outfit:   Here are two distinct outfits combining your new Y2K butterfly baby tee with your existing wardrobe items, playing on the contrast between fitted and oversized silhouettes:
+
+### Outfit 1: Off-Duty Model Y2K Streetwear
+*This look leans into the late-90s/early-2000s skater aesthetic by pairing the ultra-fitted baby tee with low-slung, baggy denim.*
+
+* **Top:** Y2K Butterfly Baby Tee
+* **Bottoms:** Baggy straight-leg jeans (wear them slightly lower on the hips foran authentic Y2K look, cinched with the **brown leather belt**)
+* **Outerwear:** Vintage black denim jacket (worn off the shoulders or draped casually)
+* **Shoes:** Chunky white sneakers
+* **Accessories:** Black crossbody bag
+
+### Outfit 2: Elevated Contrast (Sporty meets Vintage)
+*This look uses the wide-leg trousers to add a tailored, sophisticated balance tothe playful, cropped graphic tee.*
+
+* **Top:** Y2K Butterfly Baby Tee
+* **Bottoms:** Wide-leg khaki trousers (paired with the **brown leather belt** totie the look together)
+* **Outerwear:** Black cropped zip hoodie (left open to show off the baby tee andcontrast the short-over-long layers)
+* **Shoes:** Black combat boots (to add a touch of edge and create a nice line peeking out from the wide-leg trousers)
+* **Accessories:** Black crossbody bag
+
+  Fit card: **Caption:**
+
+Mastering the high-low silhouette with the ultimate early 2000s staple 🦋✨ Sourced this Y2K Baby Tee — Butterfly Print — Super cute early 2000s baby tee with butterfly graphic. Fitted crop length. Tag says medium but fits like a small. for just**$18 on Depop**, and styled it two ways: leaning into off-duty skater streetwearwith baggy denim, and elevated vintage-meets-sporty with wide-leg trousers. Whichvibe are you choosing? 👇
+
+2 model calls this session, 479 prompt + 424 output tokens
+[1] search_listings(via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 2 items: Vintage Levi's 501 Jeans — Medium Wash, High-Waisted Denim Shorts — Cutoff
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: Here are two versatile outfits you can create using your new Vintage Levi's 501 Jeans (Medium Wash) and items …
+      →    IDs: first=lst_001, selected=lst_001, passed=lst_001; match=True
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: Two ways to style these Vintage Levi's 501 Jeans (Medium Wash) for $38on Depop! 👖✨ Channel effortless 90s cas…
+
+  Found:    Vintage Levi's 501 Jeans — Medium Wash — $38.0 on depop
+
+  Outfit:   Here are two versatile outfits you can create using your new Vintage Levi's 501 Jeans (Medium Wash) and items already in your wardrobe:
+
+### Outfit 1: Effortless 90s Casual (Daytime / Running Errands)
+*This look leans into the classic, relaxed fit of the 501s for an easy, timeless aesthetic.*
+
+* **Top:** White ribbed tank top (tucked in)
+* **Layer:** Oversized grey crewneck sweatshirt (worn draped over the shoulders or easily tossed on if it gets chilly)
+* **Footwear:** Chunky white sneakers
+* **Accessories:** Brown leather belt + Black crossbody bag
+* **Why it works:** The crisp white tank and medium-wash denim create a clean, classic color palette. Adding the brown belt breaks up the look and pulls in a nice vintage contrast, while the chunky sneakers keep it modern and comfortable.
+
+### Outfit 2: Edgy Contrast (Night Out / Cooler Weather)
+*This look pairs the casual, lived-in feel of the medium-wash jeans with sharper,darker elements for a cool high-low mix.*
+
+* **Top:** White ribbed tank top 
+* **Layer:** Vintage black denim jacket *or* Black cropped zip hoodie (the cropped hoodie looks especially great layered under the jacket, or worn on its own)
+* **Footwear:** Black combat boots
+* **Accessories:** Black crossbody bag (skip the brown belt here to keep the hardware and accessories consistently black/silver)
+* **Why it works:** The medium wash of the Levi's pops against an all-black upperhalf. Tucking the white tank in gives a flash of contrast at the waist, and the combat boots add structure and edge to the straight leg of the 501s.
+
+  Fit card: Two ways to style these Vintage Levi's 501 Jeans (Medium Wash) for $38 on Depop! 👖✨ Channel effortless 90s casual by day with chunky sneakers and a cozy sweatshirt, or flip the vibe for a night out with edgy black combat boots and monochrome layers. Which look is your favorite?
+
+2 model calls this session, 550 prompt + 442 output tokens
+[1] search_listings(via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 8 items: Denim Jacket — Light Wash, Cropped, Vintage Levi's 501 Jeans — Medium Wash, 90s Track Jacket — Navy/White Stripe … +5 more
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: Here are two ways to style your new **Light Wash, Cropped Denim Jacket** using the items already in your wardr…
+      →    IDs: first=lst_007, selected=lst_007, passed=lst_007; match=True
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: Two ways to style the ultimate 90s blank canvas: go full retro streetwear with double denim, or lean into util…
+
+  Found:    Denim Jacket — Light Wash, Cropped — $42.0 on poshmark
+
+  Outfit:   Here are two ways to style your new **Light Wash, Cropped Denim Jacket** using the items already in your wardrobe, playing with contrasting proportionsand washes:
+
+### Outfit 1: Casual Streetwear (High-Low Proportions)
+*Pair the light wash cropped jacket with items that emphasize a relaxed, oversized silhouette on the bottom.*
+
+*   **Top:** White ribbed tank top (tucked in)
+*   **Bottom:** Baggy straight-leg jeans (dark wash)
+*   **Outerwear:** Denim Jacket — Light Wash, Cropped
+*   **Footwear:** Chunky white sneakers
+*   **Accessories:** Black crossbody bag, Brown leather belt
+*   *Why it works:* The combination of a dark wash jean with a light wash jacket creates a cool, intentional "double denim" look without looking too matchy. Because the jacket is cropped and the jeans are baggy, it creates a balanced silhouette that highlights your waist while keeping the overall vibe effortless and streetwear-inspired.
+
+### Outfit 2: Edgy & Polished Contrast
+*Pair the casual, vintage-feeling light wash denim with structured, tailored trousers and heavy boots.*
+
+*   **Top:** White ribbed tank top *or* layered under the Black cropped zip hoodie (left partially unzipped)
+*   **Bottom:** Wide-leg khaki trousers
+*   **Outerwear:** Denim Jacket — Light Wash, Cropped
+*   **Footwear:** Black combat boots
+*   **Accessories:** Brown leather belt, Black crossbody bag
+*   *Why it works:* Khaki trousers and combat boots bring a smart-casual, utilitarian edge to the outfit. Throwing the cropped light-wash jacket over top adds a casual, 90s-inspired contrast that dresses down the trousers just enough for everyday wear.
+
+  Fit card: Two ways to style the ultimate 90s blank canvas: go full retro streetwear with double denim, or lean into utility-chic by pairing it with tailored trousers and combat boots. Grab this versatile Light Wash Cropped Denim Jacket for just $42 on Poshmark! 👖✨
+
+2 model calls this session, 538 prompt + 431 output tokens
+[1] search_listings(via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 3 items: 90s Silk Slip Dress — Floral, Midi Length, Leather Belt — Brown, Braided, Vintage Linen Blazer — Cream
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: Here are two ways to style the 90s floral silk slip dress using items already in your wardrobe, playing on tha…
+      →    IDs: first=lst_013, selected=lst_013, passed=lst_013; match=True
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: One 90s floral silk slip dress ($30 on depop), two ways to style it. 🖤   Whether you're leaning into effortles…
+
+  Found:    90s Silk Slip Dress — Floral, Midi Length — $30.0 on depop
+
+  Outfit:   Here are two ways to style the 90s floral silk slip dress using itemsalready in your wardrobe, playing on that classic 90s contrast of feminine/delicate and edgy/casual:
+
+### Outfit 1: 90s Grunge (Edgy & Casual)
+*Layering the sweatshirt over the dress gives the illusion of a skirt while leaning into that effortless 90s anti-fashion aesthetic.*
+
+*   **The Base:** 90s Floral Silk Slip Dress
+*   **The Layer:** Oversized grey crewneck sweatshirt (worn loosely over the dress)
+*   **Footwear:** Black combat boots
+*   **Accessories:** Black crossbody bag 
+*   **Vibe:** Perfect for a casual weekend, coffee run, or concert. The heavy boots and slouchy sweatshirt ground the lightweight, feminine feel of the silk dress.
+
+### Outfit 2: Model-Off-Duty Retro (Cool & Textural)
+*Pairing the delicate floral print with rugged black denim creates a great high-low mix of textures.*
+
+*   **The Base:** 90s Floral Silk Slip Dress
+*   **The Layer:** Vintage black denim jacket (worn casually dropped off the shoulders)
+*   **Footwear:** Chunky white sneakers
+*   **Accessories:** Black crossbody bag
+*   **Vibe:** Effortlessly cool and comfortable for daytime wandering, brunch, orrunning errands. The chunky sneakers add a modern 90s-meets-2000s sporty touch tothe vintage slip. 
+
+*(Bonus tip: If the midi length feels a bit breezy, you can also wear the white ribbed tank top layered **under** the slip dress for a very authentic 90s layered look!)*
+
+  Fit card: One 90s floral silk slip dress ($30 on depop), two ways to style it.🖤 
+
+Whether you're leaning into effortless grunge with an oversized crewneck and combat boots, or keeping it retro and cool with a slouchy denim jacket and chunky sneakers, this piece is all about that classic 90s contrast of feminine and edgy. 
+
+Which vibe are you wearing: Grunge or Model-Off-Duty? ✨👇
+
+2 model calls this session, 542 prompt + 457 output tokens
+[1] search_listings(via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 1 items: Oversized Flannel Shirt — Plaid Red/Black
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: Here are two ways to style your new red and black plaid oversized flannel shirt using only the items currently…
+      →    IDs: first=lst_003, selected=lst_003, passed=lst_003; match=True
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: Two ways to style one versatile staple: go edgy with effortless grungeor chic with elevated casual. Snag this…
+
+  Found:    Oversized Flannel Shirt — Plaid Red/Black — $22.0 on thredUp
+
+  Outfit:   Here are two ways to style your new red and black plaid oversized flannel shirt using only the items currently in your wardrobe, playing with contrasting silhouettes and vibes:
+
+### Outfit 1: Effortless Grunge (Layered & Edgy)
+*This look leans into the oversized, relaxed nature of the flannel while contrasting it with fitted pieces and chunky hardware.*
+
+* **Base:** White ribbed tank top tucked into the baggy dark wash straight-leg jeans.
+* **Layer 1:** Wear the red/black plaid flannel unbuttoned or partially buttoned over the tank.
+* **Layer 2 (Optional for colder weather):** Throw the black cropped zip hoodie *over* the flannel for a cool, layered streetwear look where the hood and hem peek out. 
+* **Footwear:** Black combat boots.
+* **Accessories:** Black crossbody bag and the brown leather belt (cinched over the jeans).
+
+### Outfit 2: Elevated Casual (Smart-Cool Contrast)
+*This look pairs the casual grunge energy of the flannel with sharper, tailored trousers for a balanced high-low mix.*
+
+* **Base:** White ribbed tank top tucked into the wide-leg khaki trousers, defined with the brown leather belt.
+* **Layer:** Wear the oversized red/black flannel open like a lightweight jacket,or buttoned up halfway and slouched off one shoulder.
+* **Footwear:** Chunky white sneakers to keep the bottom half looking modern and fresh.
+* **Outerwear option:** If you need a jacket, layer the vintage black denim jacket over the flannel.
+* **Accessories:** Black crossbody bag.
+
+  Fit card: Two ways to style one versatile staple: go edgy with effortless grunge or chic with elevated casual. Snag this Oversized Flannel Shirt — Plaid Red/Black for just $22 on thredUp!

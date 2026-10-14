@@ -143,26 +143,37 @@ def run_agent(query: str, wardrobe: dict) -> dict:
             f"No listings matched '{session['parsed']['description']}'. "
             "Try a higher max price, a different size, or fewer keywords."
         )
+        trace.step(
+            "stop",
+            returned=session["error"],
+            note="Empty search; stopping before outfit suggestions.",
+        )
         return session
-        
-    trace.step(
-        "stop",
-        returned=session["error"],
-        note="Empty search; stopping before outfit suggestions.",
-    )
    
 
     # 5. Choose the first result.
     session["selected_item"] = session["search_results"][0] 
+    
 
     # 6. Suggest an outfit with the selected item and the wardrobe.
     count += 1
     trace.check_iterations(count)
+    outfit_item = session["selected_item"]
+    first_id = session["search_results"][0]["id"]
+    selected_id = session["selected_item"]["id"]
+    passed_id = outfit_item["id"]
     session["outfit_suggestion"] = suggest_outfit(
-        session["selected_item"], session["wardrobe"]
+        outfit_item, session["wardrobe"]
     )
-    trace.step("suggest_outfit", inputs={"new_item": session["selected_item"], "wardrobe": session["wardrobe"]}, returned=session["outfit_suggestion"])
-
+    trace.step(
+        "suggest_outfit",
+        inputs={"new_item": outfit_item, "wardrobe": session["wardrobe"]},
+        returned=session["outfit_suggestion"],
+        note=(
+            f"IDs: first={first_id}, selected={selected_id}, passed={passed_id}; "
+            f"match={first_id == selected_id == passed_id}"
+        ),
+    )
     # 7. Make the fit card from the outfit and the item.
     count += 1
     trace.check_iterations(count)

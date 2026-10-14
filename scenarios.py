@@ -29,13 +29,54 @@ SCENARIOS = [
         "criterion": 2,
     },
     {
-        # A user with nothing saved. One of unit 4's three failure modes.
+        # A user with nothing saved and gets a general styling tip. One of unit 4's three failure modes.Criterion 5.
         "name": "empty wardrobe",
         "query": "denim jacket under $50",
         "wardrobe": "empty",
-        "criterion": None,
+        "criterion": 5,
     },
-    # TODO: add what your criteria 3, 4 and 5 need.
+    {
+        #state check that the selected item is the top choice from search results and that the outfit suggestion is based on the selected item. Criterion 3.
+        "name": "state check for selected item and outfit suggestion",
+        "query": "vintage graphic tee under $30",
+        "wardrobe": "example",
+        "criterion": 3,
+    },
+    {
+        #diff items dont have the same fit card. Criterion 4.
+        "name": "different items have different fit cards",
+        "query": "vintage graphic tee under $30",
+        "wardrobe": "example",
+        "criterion": 4,
+    },
+    {
+        "name": "fit card — denim jacket",
+        "query": "denim jacket under $50",
+        "wardrobe": "example",
+        "criterion": 4,
+    },
+    {
+        "name": "fit card — leather boots",
+        "query": "leather boots under $100",
+        "wardrobe": "example",
+        "criterion": 4,
+    },
+    {
+        "name": "fit card — floral dress",
+        "query": "floral dress under $40",
+        "wardrobe": "example",
+        "criterion": 4,
+    },
+    {
+        "name": "fit card — wool sweater",
+        "query": "wool sweater under $60",
+        "wardrobe": "example",
+        "criterion": 4,
+    },
+    
+     
+    
+    
     #
     # Set "criterion" to the number in criteria.md that the scenario tests.
     # "criterion": None means a diagnostic run — useful to have, but it isn't

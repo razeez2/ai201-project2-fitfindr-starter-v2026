@@ -232,11 +232,15 @@ Effortlessly cool and perfectly worn-in. Snagged these vintage Levi's 501 jeans 
 
 | Criterion | Target | Try 1 | Try 2 | Try 3 | Try 4 | Try 5 | Verdict |
 |---|---|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |  |  |
+| 1. Matching query completes all three tools and returns a fit card | At least 4/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 2. Impossible query stops before suggest_outfit and names what to change | 5/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 3. Selected-item ID matches the first search result and the item passed to suggest_outfit | At least 4/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 4. Five cards for five different items share no first sentence | 5 different items, 5 unique first sentences | PASS | PASS | PASS | PASS | PASS | MET (5/5 distinct items and openings) |
+| 5. Empty wardrobe returns a non-empty outfit suggestion | At least 4/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+
+Evidence for criteria 1, 2, 3, and 5: `results/run_2026-10-13_2328_before.md`. All five state-check tries recorded first=lst_002, selected=lst_002, passed=lst_002, with match=True.
+
+Criterion 4 was tested separately with caching off; the full commands and output are saved in [results/criterion4_manual_before.txt](results/criterion4_manual_before.txt). Its Try columns represent one card per different item, in this order: butterfly (lst_002), 501 (lst_001), denim jacket (lst_007), floral dress (lst_013), and flannel (lst_003). All five caption openings are distinct. The butterfly caption's formatting label, "Caption:", is excluded from the comparison. Three captions start with "Two ways to style", but their complete first sentences differ, which meets the original criterion.
 
 **Real output from one try**, pasted as text, naming the file and function
 that produced it:
@@ -267,14 +271,19 @@ that produced it:
 
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 | Matching query completes all three tools and returns a fit card | At least 4/5 | MET (5/5) | Each matching-query try called search, outfit suggestion, and fit-card creation and returned a non-empty fit card. |
+| 2 | Impossible query stops before the second tool and names what to change | 5/5 | MET (5/5) | Every impossible-query trace showed an empty search followed by a stop, with no outfit or fit-card call. The message suggested changing price, size, or keywords. |
+| 3 | Selected-item ID matches the first result and the item passed to suggest_outfit | At least 4/5 | MET (5/5) | Every state-check try logged first=lst_002, selected=lst_002, passed=lst_002, and match=True. |
+| 4 | Five cards for five different items share no first sentence | Five distinct items and five unique first sentences | MET | The five manual runs selected lst_002, lst_001, lst_007, lst_013, and lst_003. Their complete first sentences were all different, excluding the formatting label "Caption:". |
+| 5 | Empty wardrobe returns a non-empty outfit suggestion | At least 4/5 | MET (5/5) | Every empty-wardrobe try returned non-empty general styling advice and completed without a crash. |
 
 **Diagnoses**
 
+None of the five criteria missed its original target in these tests, so there is no observed miss to diagnose. The earlier uncertainty for criteria 3 and 4 came from the test setup: the trace did not expose the IDs, and the fit-card scenario repeatedly selected the same item. Logging the IDs and running five distinct items supplied the missing evidence.
+
+Some targets were permissive. Criterion 3 allows one state mismatch even though the loop directly passes the selected item, and criterion 5 only checks that advice is non-empty, not that it is useful. I would tighten criterion 4 in a future test: require five different opening phrases as well as different full first sentences. Three of the five cards began with "Two ways to style", so the current target allows repetitive phrasing even though all five sentences are technically unique. The step involved is `create_fit_card`, and the pattern is in the model's output: the prompt requests a short caption but does not constrain repeated opening phrases. This is a quality limitation, not a miss against the original criterion.
+
+**Opposite-verdict review:** The strongest argument for calling criterion 4 MISSED is that three openings use the same phrase and therefore sound repetitive. However, the original criterion compares full first sentences, not opening phrases, and those sentences differ. MET is supported by the stated target. These results establish success on the tested queries; they do not establish that every possible query will pass. No original criterion was revised.
 
 
 ---
