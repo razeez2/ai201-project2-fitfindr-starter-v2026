@@ -212,6 +212,24 @@ Effortlessly cool and perfectly worn-in. Snagged these vintage Levi's 501 jeans 
 - *What came back:* One `python -c` command per tool. These are the three commands in the Sample Run section above, including `search_listings('graphic tee', max_price=30)` and a `create_fit_card` test run with `AI201_CACHE=0` so the cache doesn't hand back an old caption.
 - *What I changed:* I changed the function lines, claude was giving a wrong line for suggest_outfit function where it wasnt using (generate) prompt and instead was just hard coding a description, so I added that. I then used the tests it gave me to verify the outputs were as expected for every tool.
 
+**Unit 4 — MCP and logic checks**
+
+- *What I asked for:* I asked AI for help understanding how to expose and call a tool through MCP, and used Claude to help fix logic errors.
+- *What came back:* Help understanding the server registration, typed tool inputs, and the client call that replaces a direct Python function call.
+- *What I changed:* I registered `search_listings` in `mcp_server.py` and called it from `agent.py` using `call_tool`, passing description, size, and max_price. The search still returns listing dictionaries or an empty list.
+
+**Unit 4 — Testing the criteria**
+
+- *What I asked for:* I asked AI to check whether my scenarios and run logs actually tested my criteria.
+- *What came back:* Codex pointed out that a completed run did not prove the three item IDs matched, and that repeating one query did not test five different items. It also explained that `run_eval.py` ignores extra keys such as `query2`.
+- *What I changed:* With Codex's help, I added the three IDs and their comparison to the outfit trace, moved the stop trace inside the empty-search branch, and tested five distinct items manually with caching off. I scored the table from the saved outputs instead of assuming every completed run passed.
+
+**Unit 4 — One measured improvement**
+
+- *What I asked for:* I asked Codex to help complete the prompt improvement and compare the before and after results.
+- *What came back:* A prompt targeting item-specific caption openings and an evaluation of the full rerun plus the same five manual queries.
+- *What I changed:* I changed only the fit-card prompt. The repeated "Two ways to style" opening dropped from 3/5 to 0/5, but I recorded the remaining sentence templates and unsupported details rather than claiming the captions were fully fixed.
+
 <!-- ═══════════════════════ UNIT 4 — THE TEST ═══════════════════════
 
      Don't fill these in during unit 3.
@@ -245,8 +263,19 @@ Criterion 4 was tested separately with caching off; the full commands and output
 **Real output from one try**, pasted as text, naming the file and function
 that produced it:
 
-```
+Produced by `agent.py::run_agent` through `run_eval.py::main`, matching query, Try 1.
 
+```text
+[1] search_listings(via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 10 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Vintage Band Tee — Faded Grey … +7 more
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: Here are two outfits you can create using your new Y2K butterfly-print baby tee, paired with items already in …
+      →    IDs: first=lst_002, selected=lst_002, passed=lst_002; match=True
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: Channel your inner 2000s pop star with this Y2K Baby Tee — Butterfly Print — Super cute early 2000s baby tee w…
 ```
 
 ---
@@ -302,35 +331,32 @@ Some targets were permissive. Criterion 3 allows one state mismatch even though 
 
 **Happy path**
 
-ython app.py ask 'vintage graphic tee under $30' --trace
+Recorded by `agent.py::run_agent` during the before evaluation, query `vintage graphic tee under $30`, Try 1:
+
+```text
 [1] search_listings(via MCP)
       in:  dict with keys: description, size, max_price
       out: 10 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Vintage Band Tee — Faded Grey … +7 more
 [2] suggest_outfit
       in:  dict with keys: new_item, wardrobe
-      out: Here are two distinct outfits you can create using your new Y2K Butterfly Baby Tee and your existing wardrobe,…
+      out: Here are two outfits you can create using your new Y2K butterfly-print baby tee, paired with items already in …
+      →    IDs: first=lst_002, selected=lst_002, passed=lst_002; match=True
 [3] create_fit_card
       in:  dict with keys: outfit, new_item
-      out: 🦋 Channeling pure early 2000s model-off-duty energy with this Y2K butterfly baby tee! Rock it oversized with b…
-
-```
-
+      out: Channel your inner 2000s pop star with this Y2K Baby Tee — Butterfly Print — Super cute early 2000s baby tee w…
 ```
 
 **Empty search**
 
-python3 app.py ask 
-'spacesuit' --trace
+Before evaluation, query `designer ballgown size XXS under $5`, Try 1:
+
+```text
 [1] search_listings(via MCP)
       in:  dict with keys: description, size, max_price
       out: [] (empty)
-
-  No listings matched 'spacesuit'. Try a higher max price, a different size, or fewer keywords.
-
-0 model calls this session
-
-```
-
+[2] stop
+      out: No listings matched 'designer ballgown'. Try a higher max price, a different size, or fewer keywords.
+      →    Empty search; stopping before outfit suggestions.
 ```
 
 **On the MCP move:** <!-- what changed in your code, and whether anything
@@ -338,6 +364,7 @@ behaved differently afterwards. If the rewire didn't work, say exactly where it
 broke — the error text and the last thing that worked. That earns the point in
 full. -->
 
+I registered a typed `search_listings` wrapper with `@mcp.tool()` in `mcp_server.py`; it delegates to the existing function in `tools.py`. In `agent.py::run_agent`, I replaced the direct search call with `call_tool("search_listings", {...})`. The provided client launches the server over stdio and unwraps the MCP response into a Python list. The recorded runs returned listing dictionaries on matching searches and `[]` on empty searches, so the empty-search branch still worked after the move. The trace now labels search as "via MCP". Each call starts a server process, which adds overhead; I did not measure its timing separately.
 
 
 ---
@@ -408,6 +435,10 @@ This is a small sample of model outputs, not a guarantee. The new captions still
      left is not. -->
 
 No original acceptance criterion is still missed in the scored after tests. Caption quality remains limited by repeated sentence structures and occasional invented material details. A future prompt experiment would require using only listing-supported details and test factual accuracy as well as varied openings. I stopped after one prompt change to keep this milestone's comparison attributable to one improvement. The wool-sweater scenario also needs a query that selects an existing item if criterion 4 is to be tested entirely by `run_eval.py`; the documented manual tests supplied that evidence here.
+
+Two additional issues remain outside the scored criteria. The MCP tool description promises `url` and `image_url` fields that the actual listings do not contain; I would correct the published description to match the real return fields. Also, `run_agent` does not catch `ModelUnavailable` itself: during the sandbox-blocked test attempt, `run_eval.py` recorded it as a crash. The CLI can display a friendly message, but other callers still need protection. I would add a handler that stores an actionable session error and stops. I left both for a separate change so the prompt experiment remained the only implementation change in Milestone 5.
+
+**Repository URL:** [https://github.com/razeez2/ai201-project2-fitfindr-starter-v2026](https://github.com/razeez2/ai201-project2-fitfindr-starter-v2026). This is the existing `origin` repository; submit the same repository used in the previous unit.
 
 
 
