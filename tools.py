@@ -199,4 +199,10 @@ def create_fit_card(outfit: str, new_item: dict) -> str:
     description = f"{new_item['title']} — {new_item['description']} (${new_item['price']:.0f} on {new_item['platform']})"
 
     outfit = f"{outfit}. Mention the item and its price and platform once each, and be specific about the vibe."
-    return generate(f"Create a short caption for this outfit: {outfit}. {description}")
+    return generate(
+        f"Create a short caption for this outfit: {outfit}. {description}. "
+        "Return only one caption of two to four sentences, without a heading. "
+        "Open with a specific detail about this item's color, texture, print, or silhouette "
+        "so the opening reflects the individual item. Avoid generic openings such as "
+        "'Two ways to style', 'Channeling', or 'Serving'."
+    )

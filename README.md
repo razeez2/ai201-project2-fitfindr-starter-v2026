@@ -351,19 +351,48 @@ full. -->
 
 **What I changed:**
 
+I rewrote only the non-empty-outfit prompt in `tools.py::create_fit_card`. It now asks for one two-to-four-sentence caption without a heading, with an opening based on the item's color, texture, print, or silhouette. It explicitly avoids generic openings such as "Two ways to style", "Channeling", and "Serving". Search, outfit suggestions, the planning loop, and the original acceptance criteria are unchanged.
+
 **Which failure it was meant to fix:**
+
+Milestone 4 found a quality limitation in the model's output: three of five manual captions opened with "Two ways to style". All five met the original unique-first-sentence criterion, but the repeated phrase made captions for different items sound similar. This prompt change targets that pattern.
 
 ### Run Log — After
 
 | Criterion | Target | Try 1 | Try 2 | Try 3 | Try 4 | Try 5 | Verdict |
 |---|---|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |  |  |
+| 1. Matching query completes all three tools and returns a fit card | At least 4/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 2. Impossible query stops before suggest_outfit and names what to change | 5/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 3. Selected-item ID matches the first search result and the item passed to suggest_outfit | At least 4/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 4. Five cards for five different items share no first sentence | 5 different items, 5 unique first sentences | PASS | PASS | PASS | PASS | PASS | MET (5/5 distinct items and openings) |
+| 5. Empty wardrobe returns a non-empty outfit suggestion | At least 4/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+
+Full evaluation evidence: [results/run_2026-10-14_0001_after.md](results/run_2026-10-14_0001_after.md), produced by `python run_eval.py --label after` with caching off. Criterion 4 uses a separate repeat of the same five manual queries as the before test; full sessions and traces are saved in [results/criterion4_manual_after.json](results/criterion4_manual_after.json). Its Try columns correspond to butterfly (lst_002), 501 (lst_001), denim jacket (lst_007), floral dress (lst_013), and flannel (lst_003). The full runner's wool-sweater scenario returned no matches, so it could not establish criterion 4 by itself; that scenario is not counted as a successful caption test.
+
+**Caption opening evidence from the five manual after runs**, produced by `tools.py::create_fit_card` through `agent.py::run_agent`:
+
+| Item ID | First sentence |
+|---|---|
+| lst_002 | This fitted, cropped baby tee features a nostalgic butterfly graphic and a soft texture that screams early 2000s. |
+| lst_001 | Featuring a structured rigid silhouette with light fading at the knees, these vintage medium-wash Levi's 501 jeans offer the ultimate off-duty model aesthetic. |
+| lst_007 | Featuring structured shoulders and a versatile blank-canvas light wash, this $42 cropped denim jacket from Poshmark anchors two contrasting streetwear-inspired looks. |
+| lst_013 | This muted floral silk slip dress features a delicate midi silhouette with adjustable straps and a subtle, weightless drape. |
+| lst_003 | This oversized red and black plaid flannel shirt features a classic relaxed silhouette and soft, lived-in texture. |
 
 **Did it help, and how do I know:**
+
+It reduced the specific repeated opening: on the same five manual queries with caching off, "Two ways to style" went from 3/5 captions before to 0/5 after, while all five original criteria remained MET.
+
+| Measure | Before | After |
+|---|---|---|
+| Criterion 1 passes | 5/5 | 5/5 |
+| Criterion 2 passes | 5/5 | 5/5 |
+| Criterion 3 passes | 5/5 | 5/5 |
+| Criterion 4 distinct items / distinct first sentences | 5 / 5 | 5 / 5 |
+| Criterion 5 passes | 5/5 | 5/5 |
+| Manual captions opening with "Two ways to style" | 3/5 | 0/5 |
+
+This is a small sample of model outputs, not a guarantee. The new captions still share templates such as "This ... features" and "Featuring ...", and sound more like product descriptions. Some full-evaluation captions also added unsupported details: a butterfly tee was described as having a "soft ribbed texture" or a "shimmering butterfly graphic", neither specified by its listing. The change helped the diagnosed phrase repetition, but did not solve every caption-quality problem.
 
 <!-- If it made things worse, say that. Honestly reported, that earns full
      credit and is more interesting than one that worked. -->
@@ -377,6 +406,8 @@ full. -->
 <!-- For each criterion still missed: what you'd do, and why you stopped where
      you did. "I ran out of time" is fine if it's true. Pretending nothing is
      left is not. -->
+
+No original acceptance criterion is still missed in the scored after tests. Caption quality remains limited by repeated sentence structures and occasional invented material details. A future prompt experiment would require using only listing-supported details and test factual accuracy as well as varied openings. I stopped after one prompt change to keep this milestone's comparison attributable to one improvement. The wool-sweater scenario also needs a query that selects an existing item if criterion 4 is to be tested entirely by `run_eval.py`; the documented manual tests supplied that evidence here.
 
 
 
