@@ -132,7 +132,7 @@ def run_agent(query: str, wardrobe: dict) -> dict:
             "max_price": session["parsed"]["max_price"],
         })
     
-    trace.step("search_listings", inputs=session["parsed"], returned=session["search_results"])
+    trace.step("search_listings(via MCP)", inputs=session["parsed"], returned=session["search_results"])
     
     
     
@@ -144,8 +144,13 @@ def run_agent(query: str, wardrobe: dict) -> dict:
             "Try a higher max price, a different size, or fewer keywords."
         )
         return session
-    
-    trace.step("stop", inputs=session["parsed"], returned=session["search_results"])
+        
+    trace.step(
+        "stop",
+        returned=session["error"],
+        note="Empty search; stopping before outfit suggestions.",
+    )
+   
 
     # 5. Choose the first result.
     session["selected_item"] = session["search_results"][0] 

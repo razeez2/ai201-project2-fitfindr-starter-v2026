@@ -293,11 +293,32 @@ that produced it:
 
 **Happy path**
 
+ython app.py ask 'vintage graphic tee under $30' --trace
+[1] search_listings(via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 10 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Vintage Band Tee — Faded Grey … +7 more
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: Here are two distinct outfits you can create using your new Y2K Butterfly Baby Tee and your existing wardrobe,…
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: 🦋 Channeling pure early 2000s model-off-duty energy with this Y2K butterfly baby tee! Rock it oversized with b…
+
 ```
 
 ```
 
 **Empty search**
+
+python3 app.py ask 
+'spacesuit' --trace
+[1] search_listings(via MCP)
+      in:  dict with keys: description, size, max_price
+      out: [] (empty)
+
+  No listings matched 'spacesuit'. Try a higher max price, a different size, or fewer keywords.
+
+0 model calls this session
 
 ```
 
